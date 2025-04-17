@@ -1,0 +1,21 @@
+{
+    "registro": [
+        {
+            "id": 1,
+            "nome": "Kayky",
+            "email": "felxff1@gmail.com",
+            "senha": "$2b$14$3kRzFVTIdAk/uL8jMxiNCepSoets6RpfUmQvpLJOJ8jVVay628Fle"
+        }
+    ],
+    "formulario": [
+        {
+            "id": 1,
+            "sistema": "Arch Linux",
+            "linguagem": "Rust",
+            "telefone": "Nokia",
+            "cor": "Prata",
+            "bebida": "Vinho",
+            "id_usuario": 1
+        }
+    ]
+}

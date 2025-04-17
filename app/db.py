@@ -1,11 +1,14 @@
 import sqlite3
+import os
 from tkinter import messagebox
 import bcrypt
 from utils import validar_email, validar_nome
 
+CAMINHO_DB = os.path.join(os.path.dirname(__file__), "banco.db")
+
 def conexao_db():
     try:
-        with sqlite3.connect("banco.db") as db:
+        with sqlite3.connect(CAMINHO_DB) as db:
             cursor = db.cursor()
             return db, cursor
     except Exception as erro:
@@ -27,13 +30,14 @@ def criar_tabela_formulario():
     db, cursor = conexao_db()
     if cursor and db:
         cursor.execute("""CREATE TABLE IF NOT EXISTS formulario(
-            id INTEGER NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             sistema TEXT NOT NULL,
             linguagem TEXT NOT NULL,
             telefone TEXT NOT NULL,
             cor TEXT NOT NULL,
             bebida TEXT NOT NULL,
-            FOREIGN KEY(id) REFERENCES registro(id))""")
+            id_usuario INTEGER NOT NULL,
+            FOREIGN KEY(id_usuario) REFERENCES registro(id))""")
         db.commit()
         
 
@@ -93,16 +97,23 @@ def obter_id_pelo_email(email):
         if cursor and db:
             cursor.execute("""SELECT id FROM registro WHERE email = ?""", (email,))
             id_usuario = cursor.fetchone()
-            return id_usuario
+            return id_usuario[0] if id_usuario else None
     except Exception as erro:
         messagebox.showerror("ERRO", f"OCORREU UM ERRO: {erro}")
 
 def inserir_dados_no_formulario(id_usuario, sistema, linguagem, telefone, cor, bebida):
     try:
+        if not id_usuario:
+            messagebox.showerror("ERRO", "ID do usuário não pode ser nulo.")
+            return False
+        elif not all([sistema, linguagem, telefone, cor, bebida]):
+            messagebox.showerror("ERRO", "Todos os campos do formulário devem ser preenchidos.")
+            return False
         db, cursor = conexao_db()
         if cursor and db:
             cursor.execute("""INSERT INTO formulario(
-            id,sistema,
+            id_usuario,
+            sistema,
             linguagem,
             telefone,
             cor,
